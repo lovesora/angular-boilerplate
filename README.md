@@ -12,5 +12,7 @@ bower install
 gulp
 ```
 
+open `localhost:8000`, then get starting.
+
 ## License
 MIT

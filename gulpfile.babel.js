@@ -3,7 +3,7 @@
  * 1.压缩html
  * 3.es6转化
  * 4.压缩js
- * 5.编译less&scss
+ * 5.编译scss
  * 6.压缩css
  *
  * @author 刘鑫<475212506@qq.com>
@@ -13,7 +13,7 @@
 import gulp from 'gulp';
 import combiner from 'stream-combiner2';
 import loadPlugins from 'gulp-load-plugins';
-var $ = loadPlugins();
+let $ = loadPlugins();
 
 /**
  * 配置信息
@@ -36,73 +36,42 @@ class Configs {
          * 源文件夹路径
          * @type {String}
          */
-        this.srcDir = "src/";
+        this.srcDir = 'src';
 
         /**
          * 发布文件夹路径
          * @type {String}
          */
-        this.distDir = "dist/";
-
-        /**
-         * 应用程序公共文件所在文件夹路径
-         * @type {String}
-         */
-        this.commonDir = `${this.distDir}common/`;
-
-        /**
-         * js合并文件all.js所在路径
-         * @type {String}
-         */
-        this.concatJs = `${this.commonDir}js/`;
-
-        /**
-         * css合并文件all.css所在路径
-         * @type {String}
-         */
-        this.concatCss = `${this.commonDir}css/`;
+        this.distDir = 'dist';
 
         /**
          * html所在源文件夹
          * @type {String}
          */
-        this.html = `${this.srcDir}**/*.html`;
+        this.html = [`${this.srcDir}/**/*.html`];
 
         /**
          * js所在源文件夹
          * @type {String}
          */
-        this.angularjs = `${this.srcDir}**/*.js`;
-
-        /**
-         * less所在源文件夹
-         * @type {String}
-         */
-        this.less = `${this.srcDir}**/**.less`;
+        this.angularjs = [`${this.srcDir}/**/*.js`];
 
         /**
          * scss所在源文件夹
          * @type {String}
          */
-        this.scss = `${this.srcDir}**/**.scss`;
+        this.scss = [`${this.srcDir}/**/*.scss`];
 
         /**
          * css所在源文件夹
          * @type {String}
          */
-        this.css = `${this.srcDir}**/**.css`;
+        this.css = [`${this.srcDir}/**/*.css`];
 
         /**
          * vendor目录
          */
         this.vendor = 'vendor';
-
-        /**
-         * vendor > materialize
-         * @type {String}
-         */
-        this.vendor_materialze = `${this.vendor}/materialize/sass/materialize.scss`;
-        this.vendor_materialzeDistDir = `${this.vendor}/materialize/dist/css/`;
     }
 }
 
@@ -110,7 +79,7 @@ class Configs {
  * 全局配置变量
  * @type {Configs}
  */
-var configs = new Configs();
+let configs = new Configs();
 
 /**
  * 日志(输出到控制台)
@@ -163,7 +132,7 @@ class Log {
         else
             this.path = $.watchPath(event, configs.srcDir, configs.srcDir);
         console.log('\n');
-        $.util.log($.util.colors.green(JSON.stringify(event.event)) + ": " + this.path.srcPath);
+        $.util.log($.util.colors.green(JSON.stringify(event.event)) + ': ' + this.path.srcPath);
     }
 
     /**
@@ -189,8 +158,8 @@ class CombinerErrHandler {
     /**
      * 输出react编译时产生的错误信息
      */
-    react(err) {
-        var colors = $.util.colors;
+    angularjs(err) {
+        let colors = $.util.colors;
         $.util.log(colors.red('Error!'));
         $.util.log('fileName: ' + colors.red(err.fileName));
         $.util.log('plugin: ' + colors.yellow(err.plugin));
@@ -200,20 +169,6 @@ class CombinerErrHandler {
         // $.util.log('colNumber: ' + colors.red(err.cause.col));
         // $.util.log('message: ' + err.cause.message);
     }
-
-    /**
-     * 输出less编译时产生的错误信息
-     */
-    less(err) {
-        var colors = $.util.colors;
-        $.util.log(colors.red('Error!'));
-        $.util.log('fileName: ' + colors.red(err.filename));
-        $.util.log('lineNumber: ' + colors.red(err.line));
-        $.util.log('colNumber: ' + colors.red(err.column.col));
-        $.util.log('message: ' + err.message);
-        $.util.log('plugin: ' + colors.yellow(err.plugin));
-    }
-
 }
 
 /**
@@ -273,73 +228,35 @@ class Task {
      * 编译&合并&压缩react&es6、
      * @param {srcPath,distDir} p angularjs文件的路径信息
      */
-    react(p) {
+    angularjs(p) {
         if (configs.isSourcemaps)
             combiner.obj([
                 gulp.src(p.srcPath),
                 $.sourcemaps.init(),
                 $.babel({
-                    "presets": ['es2015']
+                    'presets': ['es2015']
                 }),
-                // $.concat('all.js'),
-                gulp.dest(p.distDir),
                 $.ngAnnotate(),
                 $.uglify(),
-                $.rename(p => {
-                    p.extname = '.min.js';
-                }),
                 $.sourcemaps.write('./'),
                 gulp.dest(p.distDir),
                 $.callback(() => {
                     this.reload(p);
                 })
-            ]).on('error', this.combinerErrHandler.react);
+            ]).on('error', this.combinerErrHandler.angularjs);
         else
             combiner.obj([
                 gulp.src(p.srcPath),
                 $.babel({
-                    "presets": ['es2015']
+                    'presets': ['es2015']
                 }),
-                // $.concat('all.js'),
-                gulp.dest(p.distDir),
                 $.ngAnnotate(),
                 $.uglify(),
-                $.rename(p => {
-                    p.extname = '.min.js';
-                }),
                 gulp.dest(p.distDir),
                 $.callback(() => {
                     this.reload(p);
                 })
-            ]).on('error', this.combinerErrHandler.react);
-        return this;
-    }
-
-    /**
-     * 编译less文件
-     * @param {srcPath,distDir} p less文件的路径信息
-     */
-    less(p) {
-        if (configs.isSourcemaps)
-            combiner.obj([
-                gulp.src(p.srcPath),
-                $.sourcemaps.init(),
-                $.less(),
-                $.sourcemaps.write('./'),
-                gulp.dest(p.distDir),
-                $.callback(() => {
-                    this.reload(p);
-                })
-            ]).on('error', this.combinerErrHandler.less);
-        else
-            combiner.obj([
-                gulp.src(p.srcPath),
-                $.less(),
-                gulp.dest(p.distDir),
-                $.callback(() => {
-                    this.reload(p);
-                })
-            ]).on('error', this.combinerErrHandler.less);
+            ]).on('error', this.combinerErrHandler.angularjs);
         return this;
     }
 
@@ -366,31 +283,8 @@ class Task {
         return this;
     }
 
-    sass(p) {
-        if (configs.isSourcemaps)
-            combiner.obj([
-                gulp.src(p.srcPath),
-                $.sourcemaps.init(),
-                $.sass().on('error', $.sass.logError),
-                $.sourcemaps.write('./'),
-                gulp.dest(p.distDir),
-                $.callback(() => {
-                    this.reload(p);
-                })
-            ]);
-        else
-            combiner.obj([
-                gulp.src(p.srcPath),
-                $.sass().on('error', $.sass.logError),
-                gulp.dest(p.distDir),
-                $.callback(() => {
-                    this.reload(p);
-                })
-            ]);
-    }
-
     /**
-     * 添加浏览器前缀&合并&压缩css
+     * 添加浏览器前缀&压缩css
      * @param {srcPath,distDir} p css文件的路径信息
      */
     css(p) {
@@ -400,15 +294,10 @@ class Task {
                 gulp.src(p.srcPath),
                 $.sourcemaps.init(),
                 $.postcss([autoprefixer()]),
-                // $.concat('all.css'),
-                gulp.dest(p.distDir),
                 $.cleanCss({
                     compatibility: 'ie8'
                 }),
-                $.rename(p => {
-                    p.extname = '.min.css';
-                }),
-                $.sourcemaps.write("./"),
+                $.sourcemaps.write('./'),
                 gulp.dest(p.distDir),
                 $.callback(() => {
                     this.reload(p);
@@ -418,13 +307,8 @@ class Task {
             combiner.obj([
                 gulp.src(p.srcPath),
                 $.postcss([autoprefixer()]),
-                // $.concat('all.css'),
-                gulp.dest(p.distDir),
                 $.cleanCss({
                     compatibility: 'ie8'
-                }),
-                $.rename(p => {
-                    p.extname = '.min.css';
                 }),
                 gulp.dest(p.distDir),
                 $.callback(() => {
@@ -435,39 +319,13 @@ class Task {
     }
 }
 
-class vendorCompile {
-    materialize() {
-        combiner.obj([
-            $.rubySass(configs.vendor_materialze, {
-                sourcemap: true
-            }).on('error', $.rubySass.logError),
-            gulp.dest(configs.vendor_materialzeDistDir),
-            $.cleanCss({
-                compatibility: 'ie8'
-            }),
-            $.rename(p => {
-                p.extname = '.min.css';
-            }),
-            $.sourcemaps.mapSources(function(sourcePath, file) {
-                return '../../sass/' + sourcePath;
-            }),
-            $.sourcemaps.write('./'),
-            gulp.dest(configs.vendor_materialzeDistDir)
-        ]);
-    }
-}
-
-gulp.task('vendor', () => {
-    new vendorCompile().materialize();
-})
-
 gulp.task('watch', () => {
     $.watch(configs.angularjs, event => {
-        new Log(event).cb(path => {
+        new Log(event).cb(() => {
             new Task()
-                .react({
+                .angularjs({
                     srcPath: configs.angularjs,
-                    distDir: configs.concatJs
+                    distDir: configs.distDir
                 });
         });
     });
@@ -479,13 +337,6 @@ gulp.task('watch', () => {
         });
     });
 
-    $.watch(configs.less, event => {
-        new Log(event, false).cb(path => {
-            new Task()
-                .less(path);
-        });
-    });
-
     $.watch(configs.scss, event => {
         new Log(event, false).cb(path => {
             new Task()
@@ -494,11 +345,11 @@ gulp.task('watch', () => {
     });
 
     $.watch(configs.css, event => {
-        new Log(event).cb(path => {
+        new Log(event).cb(() => {
             new Task()
                 .css({
                     srcPath: configs.css,
-                    distDir: configs.concatCss
+                    distDir: configs.distDir
                 });
         });
     });
@@ -507,7 +358,7 @@ gulp.task('watch', () => {
 gulp.task('connect', () => {
     $.connect.server({
         port: configs.port,
-        root: './',
+        root: `./${configs.distDir}`,
         livereload: true
     });
 });
@@ -518,13 +369,9 @@ gulp.task('init', () => {
             srcPath: configs.html,
             distDir: configs.distDir
         })
-        .react({
+        .angularjs({
             srcPath: configs.angularjs,
-            distDir: configs.concatJs
-        })
-        .less({
-            srcPath: configs.less,
-            distDir: configs.srcDir
+            distDir: configs.distDir
         })
         .rubySass({
             srcPath: configs.scss,
@@ -532,8 +379,8 @@ gulp.task('init', () => {
         })
         .css({
             srcPath: configs.css,
-            distDir: configs.concatCss
+            distDir: configs.distDir
         });
 });
 
-gulp.task('default', ['connect', 'watch']);
+gulp.task('default', ['init', 'connect', 'watch']);
