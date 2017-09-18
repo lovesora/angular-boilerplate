@@ -60,7 +60,11 @@
       "block-spacing": 1,
       "comma-dangle": 0,
       "array-bracket-spacing": 1,
-      "space-before-function-paren": [2, "never"],
+      "space-before-function-paren": ["error", {
+        "named": "never",
+        "asyncArrow": "always",
+        "anonymous": "always"
+      }],
       "no-extra-bind": 1,
       "no-var": "error",
       "arrow-spacing": ["error", {
