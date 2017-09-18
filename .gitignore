@@ -59,3 +59,16 @@ typings/
 
 # bower
 dist
+
+# bower
+dist
+
+# sourcemap
+src/**/*.map
+src/**/*.css
+
+# sass
+.sass-cache
+
+# vscode
+.vscode
