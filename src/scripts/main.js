@@ -10,6 +10,7 @@ let requireConfig = {
         'angular-ui-router': ['//cdn.bootcss.com/angular-ui-router/1.0.3/angular-ui-router.min', BOWER_DIR + 'angular-ui-router/release/angular-ui-router.min'],
         'angular-require': [BOWER_DIR + 'angular-require/angular-require.min']
     },
+    // 让requirejs支持加载css
     map: {
         '*': {
             'css': BOWER_DIR + 'require-css/css'
@@ -36,10 +37,11 @@ let requireConfig = {
 require.config(requireConfig);
 
 //require错误处理,否则默认会去访问官网,国外很慢
-require.onError = function(err) {
+require.onError = function (err) {
     console.log('require error:', err, arguments);
 };
 
-requirejs(['app'], function() {
+// 启动app
+requirejs(['app'], function () {
     angular.bootstrap(document, ['app']);
 });
