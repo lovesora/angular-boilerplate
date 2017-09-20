@@ -24,7 +24,7 @@ class Configs {
          * gulp-connect端口号
          * @type {Number}
          */
-        this.port = 8000;
+        this.port = 8880;
 
         /**
          * 是否启用Sourcemaps
@@ -71,7 +71,19 @@ class Configs {
         /**
          * vendor目录
          */
-        this.vendor = 'vendor';
+        this.vendor = `${this.distDir}/public`;
+
+        /**
+         * browser-sync配置
+         */
+        this.bs = {
+            port: 8888,
+            proxy: `http://localhost:${this.port}`,
+            open: false,
+            reloadDebounce: 300,
+            files: ['dist/**/*.*', '!dist/public/**/*.*', '!dist/**/*.map'],
+            sockets: false
+        };
     }
 }
 
@@ -359,8 +371,14 @@ gulp.task('connect', () => {
     $.connect.server({
         port: configs.port,
         root: `./${configs.distDir}`,
-        livereload: true
+        livereload: false
     });
+});
+
+// HMR css
+gulp.task('bs', () => {
+    let browserSync = require('browser-sync').create();
+    browserSync.init(configs.bs);
 });
 
 gulp.task('init', () => {
@@ -383,4 +401,5 @@ gulp.task('init', () => {
         });
 });
 
-gulp.task('default', ['init', 'connect', 'watch']);
+// gulp-sequence顺序执行，前一个task执行完成后再执行下一个
+gulp.task('default', $.sequence(['init'], ['connect'], ['bs'], ['watch']));

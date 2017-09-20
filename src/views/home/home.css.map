@@ -1,1 +1,0 @@
-{"version":3,"mappings":"AAAA,QAAS;EACL,KAAK,EAAE,IAAI","sources":["views/home/home.scss"],"names":[],"file":"home.css","sourcesContent":["h1.title {\n    color: blue;\n}"]}

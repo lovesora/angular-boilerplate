@@ -60,9 +60,6 @@ typings/
 # bower
 dist
 
-# bower
-dist
-
 # sourcemap
 src/**/*.map
 src/**/*.css
