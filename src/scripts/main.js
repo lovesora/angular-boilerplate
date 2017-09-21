@@ -1,6 +1,6 @@
 'use strict';
 
-let BOWER_DIR = 'public/';
+const BOWER_DIR = 'public/';
 let requireConfig = {
     baseUrl: './',
     paths: {
