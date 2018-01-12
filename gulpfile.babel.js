@@ -113,9 +113,9 @@ class Log {
      *
      * event
      * {
-            "history": ["D:\\Developer\\Web\\react-demo\\src\\demo-mdl\\css\\start.css"],
-            "cwd": "D:\\Developer\\Web\\react-demo",
-            "base": "D:\\Developer\\Web\\react-demo\\src",
+            "history": [""],
+            "cwd": "",
+            "base": "",
             "stat": {
                 "dev": 1211568586,
                 "mode": 33206,
@@ -168,7 +168,7 @@ class CombinerErrHandler {
     }
 
     /**
-     * 输出react编译时产生的错误信息
+     * 输出angular编译时产生的错误信息
      */
     angularjs(err) {
         let colors = $.util.colors;
@@ -237,7 +237,7 @@ class Task {
     }
 
     /**
-     * 编译&合并&压缩react&es6、
+     * 编译&合并&压缩angular&es6、
      * @param {srcPath,distDir} p angularjs文件的路径信息
      */
     angularjs(p) {
@@ -402,4 +402,6 @@ gulp.task('init', () => {
 });
 
 // gulp-sequence顺序执行，前一个task执行完成后再执行下一个
-gulp.task('default', $.sequence(['init'], ['connect'], ['bs'], ['watch']));
+gulp.task('dev', $.sequence(['init'], ['connect'], ['bs'], ['watch']))
+
+gulp.task('default', ['init']);

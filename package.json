@@ -4,11 +4,8 @@
   "description": "angular1.x boilerplate",
   "main": "main.js",
   "scripts": {
-    "clean": "find ./src | grep -E '\\.(map|css)$' | xargs rm -rf",
-    "prestart": "npm run clean",
-    "start": "gulp",
-    "build": "yarn install && bower install && gulp init",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "sh ./bin/start.sh",
+    "build": "sh ./bin/build.sh"
   },
   "repository": {
     "type": "git",
@@ -34,6 +31,7 @@
     "browser-sync": "^2.18.13",
     "eslint": "^4.4.0",
     "eslint-plugin-requirejs": "^3.1.1",
+    "eslintrc": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-callback": "0.0.3",

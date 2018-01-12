@@ -8,7 +8,8 @@ let requireConfig = {
 
         'angular': ['//cdn.bootcss.com/angular.js/1.4.6/angular.min', BOWER_DIR + 'angular/angular.min'],
         'angular-ui-router': ['//cdn.bootcss.com/angular-ui-router/1.0.3/angular-ui-router.min', BOWER_DIR + 'angular-ui-router/release/angular-ui-router.min'],
-        'angular-require': [BOWER_DIR + 'angular-require/angular-require.min']
+        'angular-require': [BOWER_DIR + 'angular-require/angular-require.min'],
+        'angular1-lib-btn': [BOWER_DIR + 'angular1-lib/dist/modules/btn.module/btn.module']
     },
     // 让requirejs支持加载css
     map: {
@@ -22,7 +23,7 @@ let requireConfig = {
         },
         'angular-ui-router': {
             deps: ['angular'],
-            exports: 'ui-router'
+            exports: 'angular-ui-router'
         },
         'angular-require': {
             deps: ['angular'],
@@ -30,7 +31,15 @@ let requireConfig = {
         },
         'app': {
             deps: ['angular', 'angular-ui-router', 'angular-require']
-        }
+        },
+
+
+
+        // $ modules
+        'angular1-lib-btn': {
+            deps: ['angular']
+        },
+        // ^ modules
     }
 };
 
